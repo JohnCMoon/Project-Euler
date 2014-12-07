@@ -23,6 +23,9 @@ then
 	exit 1
 fi
 
+# Checks to see if lynx is installed #
+command -v lynx >/dev/null 2>&1 || { echo >&2 "error: lynx is required."; exit 1; }
+
 PROBLEM=$1
 
 # Exits if there's already a solution directory. #
