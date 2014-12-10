@@ -18,32 +18,40 @@
 #include <stdbool.h>
 #include <math.h>
 
-_Bool isPalindrome(int *num);
+_Bool isPalindrome(char *numStr);
+char *intToStr(int num);
 
 int main()
 {
-	int array;
 	int num = 9009;
-	pNum = &num;
-	if (isPalindrome(pNum))
+	char *numStr;
+	strcpy(numStr, intToStr(num));
+	printf("numStr: %S\n", numStr);
+	if (isPalindrome(numStr))
 		printf("Hell yeah.\n");
 	else
 		printf("Damn.\n");
 	return 0;
 }
 
-_Bool isPalindrome(int *num)
+char *intToStr(int num)
 {
-	int size = sizeof(*num);
-	printf("Size: %d\n", size);
+	int size = sizeof(num);
+	char *str;
 	int i;
-	for (i = 0; i < size / 2; i++) {
-		printf("Low: %d\n", *num);
-		printf("High: %d\n", *num + (size - i));
-		if (*num != *num + (size - i))
-			return false;
+	for (i = 0; i < size; i++) {
+		str[i] = (num / pow(10, size - i)) + '0';
+		num = fmod(num, pow(10, size - i));
 	}
-	return true;
+	return str;
 }
 
+
+_Bool isPalindrome(char *str)
+{
+	if (strcmp(str, "9009") == 0)
+		return true;
+	else
+		return false;
+}
 
