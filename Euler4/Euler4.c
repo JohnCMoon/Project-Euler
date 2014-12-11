@@ -23,9 +23,9 @@ char *intToStr(int num);
 
 int main()
 {
-	int num = 9009;
+	int num = 1234;
 	char *numStr;
-	strcpy(numStr, intToStr(num));
+	strncpy(numStr, intToStr(num), 5);
 	printf("numStr: %S\n", numStr);
 	if (isPalindrome(numStr))
 		printf("Hell yeah.\n");
@@ -37,11 +37,14 @@ int main()
 char *intToStr(int num)
 {
 	int size = sizeof(num);
-	char *str;
+	printf("Size of num: %d\n", size);
+	char str[5];
 	int i;
-	for (i = 0; i < size; i++) {
-		str[i] = (num / pow(10, size - i)) + '0';
-		num = fmod(num, pow(10, size - i));
+	for (i = 1; i <= size; i++) {
+		double place = ((num - fmod(num, pow(10, size - i))) / pow(10, size - i)) + '0';
+		str[i] = place + '0';
+		printf("10^%d: %c\n",size - i, str[i]);
+		num = num - (place * pow(10, size - i));
 	}
 	return str;
 }
