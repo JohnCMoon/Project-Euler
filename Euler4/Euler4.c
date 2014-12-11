@@ -20,39 +20,54 @@
 
 _Bool isPalindrome(char *numStr);
 char *intToStr(int num);
+int lengthHelper(unsigned num);
 
 int main()
 {
-	int num = 1234;
-	char *numStr;
-	strncpy(numStr, intToStr(num), 5);
-	printf("numStr: %S\n", numStr);
-	if (isPalindrome(numStr))
+	int num = 123456;
+	if (isPalindrome(intToStr(num)))
 		printf("Hell yeah.\n");
 	else
 		printf("Damn.\n");
 	return 0;
 }
 
+/* Converts interger to a char string */
 char *intToStr(int num)
 {
-	int size = sizeof(num);
-	printf("Size of num: %d\n", size);
-	char str[5];
+	int length = lengthHelper(num);
+	printf("Size of num: %d\n", length);
+	char str[6];
 	int i;
-	for (i = 1; i <= size; i++) {
-		double place = ((num - fmod(num, pow(10, size - i))) / pow(10, size - i)) + '0';
+	for (i = 1; i <= length; i++) {
+		int place = ((num - fmod(num, pow(10, length - i))) / pow(10, length - i));
 		str[i] = place + '0';
-		printf("10^%d: %c\n",size - i, str[i]);
-		num = num - (place * pow(10, size - i));
+		printf("10^%d: %c\n",length - i, str[i]);
+		num = num - (place * pow(10, length - i));
 	}
 	return str;
+}
+
+/* Stolen from http://stackoverflow.com/questions/3068397/finding-the-length-of-an-integer-in-c */
+int lengthHelper(unsigned x) 
+{
+	if(x>=1000000000) return 10;
+	if(x>=100000000) return 9;
+	if(x>=10000000) return 8;
+	if(x>=1000000) return 7;
+	if(x>=100000) return 6;
+	if(x>=10000) return 5;
+	if(x>=1000) return 4;
+	if(x>=100) return 3;
+	if(x>=10) return 2;
+	return 1;
 }
 
 
 _Bool isPalindrome(char *str)
 {
-	if (strcmp(str, "9009") == 0)
+	printf("Comparing string: %s\n", str);
+	if () == 0)
 		return true;
 	else
 		return false;
