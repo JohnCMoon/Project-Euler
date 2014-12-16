@@ -73,6 +73,7 @@ int main()
 		if (product > largest)
 			largest = product;
 		start++;
+		product = 1;
 	}
 	printf("The largest product of 13 adjacent numbers is %ld.\n", largest);
 	return 0;
