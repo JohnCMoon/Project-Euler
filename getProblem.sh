@@ -52,13 +52,16 @@ sed -i '1 ! s/^/ *   /' $CFILE
 echo "*/" >> $CFILE
 
 # Adding a little template to C file. #
-echo -en "\n#include <stdio.h>\n\n" >> $CFILE
-echo -en "int main()\n{\n\treturn 0;\n}" >> $CFILE
+echo -en "\n#include <stdio.h>\n" >> $CFILE
+echo -en "#include <math.h>\n" >> $CFILE
+echo -en "#include <stdbool.h>\n\n" >> $CFILE
+echo -en "int main()\n{\n\n\treturn 0;\n}" >> $CFILE
 
 # Adding a simple Makefile. #
 MAKEFILE=$DIR/Makefile
 echo "program:" > $MAKEFILE
-echo -en "\tgcc -Wall Euler$PROBLEM.c -o Euler$PROBLEM.o" >> $MAKEFILE
+echo -en "\tgcc -Wall Euler$PROBLEM.c -o Euler$PROBLEM.o -lm" >> $MAKEFILE
 
 # Opening vim to the new C file for editing! #
-vim $CFILE
+cd $DIR
+vim Euler$PROBLEM.c
