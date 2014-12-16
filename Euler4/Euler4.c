@@ -24,11 +24,18 @@ int lengthHelper(unsigned num);
 
 int main()
 {
-	int num = 123456;
-	if (isPalindrome(intToStr(num)))
-		printf("Hell yeah.\n");
-	else
-		printf("Damn.\n");
+	unsigned long largest = 0;
+	int i;
+	int j;
+	for (i = 1; i < 1000; i++) {
+		for (j = 1; j < 1000; j++) {
+			if (isPalindrome(intToStr(i*j))) {
+				if (i*j > largest)
+					largest = i*j;
+			}
+		}
+	}
+	printf("Largest palindrome made from two 3-digit numbers: %lu\n", largest);
 	return 0;
 }
 
@@ -36,14 +43,12 @@ int main()
 char *intToStr(int num)
 {
 	int length = lengthHelper(num);
-	printf("Size of num: %d\n", length);
-	char str[6];
+	char str[length];
 	int i;
-	for (i = 1; i <= length; i++) {
-		int place = ((num - fmod(num, pow(10, length - i))) / pow(10, length - i));
+	for (i = 0; i < length; i++) {
+		int place = ((num - fmod(num, pow(10, length - i - 1))) / pow(10, length - i - 1));
 		str[i] = place + '0';
-		printf("10^%d: %c\n",length - i, str[i]);
-		num = num - (place * pow(10, length - i));
+		num = num - (place * pow(10, length - i - 1));
 	}
 	return str;
 }
@@ -63,13 +68,16 @@ int lengthHelper(unsigned x)
 	return 1;
 }
 
-
+/* Checks if argument string is palindromic */
 _Bool isPalindrome(char *str)
 {
-	printf("Comparing string: %s\n", str);
-	if () == 0)
-		return true;
-	else
-		return false;
+	int length = strlen(str);
+	int i;
+	for (i = 0; i < length / 2; i++) {
+		if (str[i] != str[length - i - 1])
+			return false;
+	}
+	return true;
 }
+
 
