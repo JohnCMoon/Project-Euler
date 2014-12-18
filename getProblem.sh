@@ -27,17 +27,27 @@ fi
 command -v lynx >/dev/null 2>&1 || { echo >&2 "error: lynx is required."; exit 1; }
 
 PROBLEM=$1
+if [ $PROBLEM -lt 10 ]
+then
+	ZPROBLEM=00$PROBLEM
+elif [ $PROBLEM -lt 100 ]
+then
+	ZPROBLEM=0$PROBLEM
+elif [ $PROBLEM -ge 100 ]
+then
+	ZPROBLEM=$PROBLEM
+fi
 
 # Exits if there's already a solution directory. #
-if [ -d "Euler$PROBLEM" ]
+if [ -d "Euler$ZPROBLEM" ]
 then
-	echo "error: directory 'Euler$PROBLEM' exists. Will not write."
+	echo "error: directory 'Euler$ZPROBLEM' exists. Will not write."
 	exit 1
 fi
 
-mkdir Euler$PROBLEM
-DIR=Euler$PROBLEM
-CFILE=$DIR/Euler$PROBLEM.c
+mkdir Euler$ZPROBLEM
+DIR=Euler$ZPROBLEM
+CFILE=$DIR/Euler$ZPROBLEM.c
 
 # Starting the comment in the C file. #
 echo -en "/*\n\n" > $CFILE
@@ -60,8 +70,8 @@ echo -en "int main()\n{\n\n\treturn 0;\n}" >> $CFILE
 # Adding a simple Makefile. #
 MAKEFILE=$DIR/Makefile
 echo "program:" > $MAKEFILE
-echo -en "\tgcc -Wall Euler$PROBLEM.c -o Euler$PROBLEM.o -lm" >> $MAKEFILE
+echo -en "\tgcc -Wall Euler$ZPROBLEM.c -o Euler$ZPROBLEM.o -lm" >> $MAKEFILE
 
 # Opening vim to the new C file for editing! #
 cd $DIR
-vim Euler$PROBLEM.c
+vim Euler$ZPROBLEM.c
