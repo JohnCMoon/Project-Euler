@@ -38,14 +38,15 @@ int countFactors(int num);
 
 int main()
 {
-	int test = 3;
+	int test = 0;
 	int i = 1;
 	while (i < INT_MAX) {
-		test = test + i; /* Ugh, how do you do this? */
-		if (countFactors(test) > 5) {
+		test = test + i;
+		if (countFactors(test) > 500) {
 			printf("The first triangle number to have over 500 divisors is %d.\n", test);
 			return 0;
 		}
+		i++;
 	}
 	return 0;
 }
