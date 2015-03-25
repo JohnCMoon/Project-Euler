@@ -1,2 +1,2 @@
 program:
-	gcc -Wall Euler013.c -o Euler013.o -lm
+	gcc -Wall -g Euler013.c -o Euler013.o -lm

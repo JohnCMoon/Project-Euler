@@ -221,50 +221,42 @@ int main()
 	{2,0,8,4,9,6,0,3,9,8,0,1,3,4,0,0,1,7,2,3,9,3,0,6,7,1,6,6,6,8,2,3,5,5,5,2,4,5,2,5,2,8,0,4,6,0,9,7,2,2},
 	{5,3,5,0,3,5,3,4,2,2,6,4,7,2,5,2,4,2,5,0,8,7,4,0,5,4,0,7,5,5,9,1,7,8,9,7,8,1,2,6,4,3,3,0,3,3,1,6,9,0}
 	};
-    
-    /* This sum is going to be at most 52 digits long */
-    int placeValues[52] = {0};
-    int r, c, p;
-    for (p = 51; p >= 0; p--) {
-        for (c = 49; c >= 0; c--) {
-            int cTotal = 0;
-            for (r = 0; r < 100; r++)
-                  cTotal = cTotal + array[r][c];
-                                                                    // Example calculations:
-            int cAdd = cTotal % 10;                                 // 425 % 10 = 5
-            int oneLeftTotal = (cTotal - cAdd) / 10;                // (425 - 5) / 10 = 42
-            int oneLeftAdd = oneLeftTotal % 10;                     // 42 % 10 = 2
-            int twoLeftTotal = (oneLeftTotal - oneLeftAdd) / 10;    // (42 - 2) / 10 = 4
-            int twoLeftAdd = twoLeftTotal;                          // no need to mod 4
-                 
-            if (p > 1) {
-                placeValues[p] = placeValues[p] + cAdd; 
-                    if (placeValues[p] > 9) {
-                        printf("A number's too big for its britches: %d\n", placeValues[p]);        
-                        placeValues[p] = (placeValues[p] - 10);
-                        placeValues[p - 1]++;
-                        printf("It's been upped to the next place. Now it's %d.\n", placeValues[p]);
-                    }
-                placeValues[p - 1] = placeValues[p - 1] + oneLeftAdd;
-                    if (placeValues[p - 1] > 9) {
-                        placeValues[p - 1] = placeValues[p - 2] - 10;
-                        placeValues[p - 2]++;
-                    }
-                placeValues[p - 2] = placeValues[p - 2] + twoLeftAdd;
-            } else if (p == 1) {
-                placeValues[p] = placeValues[p] + cAdd;
-                    if (placeValues[p] > 9) {
-                        placeValues[p] = placeValues[p] - 10;
-                        placeValues[p - 1]++;
-                    } 
-            } else if (p == 0) {
-                placeValues[p] = placeValues[p] + cAdd;
-            }
+
+        int ct[52] = {0}; // Column totals.
+        int i, j;
+        for (j = 0; j < 50; j++) {
+                for (i = 0; i < 100; i++) {
+                        ct[j + 2] = ct[j + 2] + array[i][j];
+                }
         }
-    }
-    printf("The sum of those 100 50-digit numbers is:\n");
-    int i;
-    for (i = 0; i < 52; i++)
-        printf("%d", placeValues[i]);
-    return 0;
-}
+
+        int sum[52] = {0}; // There will be a maximum of 52 digits in the sum.
+        for (i = 51; i >= 0; i--) {
+                int placeA = ct[i] % 10;
+                int placeB = ((ct[i] - placeA) % 100) / 10;
+                int placeC = (ct[i] - (placeB * 10) - placeA) / 100; 
+                sum[i] = sum[i] + placeA;
+                if (i > 0)
+                        sum[i - 1] = sum[i - 1] + placeB;
+                if (i > 1)
+                        sum[i - 2] = sum[i - 2] + placeC;
+        }
+        
+        /* At this point we still have several elements in the solution array > 9 */
+        
+        for (i = 51; i > 0; i--) {
+                if (sum[i] > 9) {
+                        int placeA = sum[i] % 10;
+                        int placeB = (sum[i] - placeA) / 10;
+                        sum[i] = placeA;
+                        sum[i - 1] = sum[i - 1] + placeB;
+                }
+        }
+        
+        printf("The sum is:\n");
+        for (i = 0; i < 52; i++)
+                printf("%d", sum[i]);
+        printf("\n");
+
+        return 0;
+}        
