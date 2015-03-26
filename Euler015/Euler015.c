@@ -12,79 +12,63 @@
  *      
 */
 
-
-/* I'm thinking I'll have to refactor this problem... Maybe
-   a good plan would be to create a two dimensional array of
-   structs... then I could maintain geometry and avoid overlapping.
-   I could also burn bridges. Like, just write a recursive function
-   that will take the rightest path before going down, then nullify
-   the access to that path. I don't know... */
-
-
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define HEIGHT 2
-#define WIDTH 2
+#define HEIGHT 20
+#define WIDTH 20
 
 struct Node {
-	int x, y;
+	int n;
 	struct Node *right;
 	struct Node *down;
 };
 
-void Node_new(struct Node *newNode)
+void Node_new(struct Node *newNode, int value)
 {
-	newNode->x = 0;
-	newNode->y = 0;
+	newNode->n = value;
 	newNode->right = NULL;
 	newNode->down = NULL;
 }
 
-void CreateGridR(struct Node *first);
-int CountPathsR(struct Node *first, int *paths);
+void CountPathsR(struct Node *first, int *paths);
 
 int main()
 {
-	struct Node *first = malloc(sizeof(struct Node));
-	Node_new(first);
-	CreateGridR(first);
+	struct Node *arr[WIDTH * HEIGHT + 1];
+	int i;
+	for (i = 0; i <= WIDTH * HEIGHT; i++) {
+		arr[i] = malloc(sizeof(struct Node));
+		Node_new(arr[i], i);
+	}
+
+	for (i = 1; i < WIDTH * HEIGHT; i++) {
+
+		if (i <= WIDTH * (HEIGHT - 1))
+			arr[i]->down = arr[i + WIDTH];
+
+		if (i % WIDTH != 0)
+			arr[i]->right = arr[i + 1];
+	}
+
 	int *paths = malloc(sizeof(int));
 	*paths = 0;
-	CountPathsR(first, paths);
-	printf("There are %d possible paths to take through the grid with the given restraints.\n", *paths);
+	CountPathsR(arr[1], paths);
+	printf("There are %d possible paths to take through a %dx%d grid.\n", *paths, WIDTH, HEIGHT);
 	return 0;
+
 }
 
-void CreateGridR(struct Node *first)
+void CountPathsR(struct Node *first, int *paths)
 {
-	if (first->x != WIDTH) {
-		first->right = malloc(sizeof(struct Node));
-		first->right->x = first->x + 1;
-		first->right->y = first->y;
-	}
-	if (first->y != HEIGHT) {
-		first->down = malloc(sizeof(struct Node));
-		first->down->y = first->y + 1;
-		first->down->x = first->x;
-	}
-	if (first->right != NULL)
-		CreateGridR(first->right);
-	if (first->down != NULL)
-		CreateGridR(first->down);
-}
-
-int CountPathsR(struct Node *first, int *paths)
-{
+	//printf("Working on node %d.\n", first->n);
 	if (first->right != NULL) {
-		(*paths)++;
 		CountPathsR(first->right, paths);
 	}
 	if (first->down != NULL) {
-		(*paths)++;
 		CountPathsR(first->down, paths);
 	}
-	return *paths;
+	(*paths)++;
 }
