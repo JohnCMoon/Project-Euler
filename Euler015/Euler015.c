@@ -17,8 +17,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define HEIGHT 20
-#define WIDTH 20
+#define HEIGHT 4
+#define WIDTH 4
 
 struct Node {
 	int n;
@@ -38,13 +38,15 @@ void CountPathsR(struct Node *first, int *paths);
 int main()
 {
 	struct Node *arr[WIDTH * HEIGHT + 1];
+	int *pathSolutions = mallocWIDTH * HEIGHT + 1];	
 	int i;
-	for (i = 0; i <= WIDTH * HEIGHT; i++) {
+	for (i = 1; i <= WIDTH * HEIGHT; i++) {
 		arr[i] = malloc(sizeof(struct Node));
 		Node_new(arr[i], i);
+		pathSolutions[i] = 0;
 	}
 
-	for (i = 1; i < WIDTH * HEIGHT; i++) {
+	for (i = 1; i <= WIDTH * HEIGHT; i++) {
 
 		if (i <= WIDTH * (HEIGHT - 1))
 			arr[i]->down = arr[i + WIDTH];
@@ -54,7 +56,7 @@ int main()
 	}
 
 	int *paths = malloc(sizeof(int));
-	*paths = 0;
+	*paths = 1;
 	CountPathsR(arr[1], paths);
 	printf("There are %d possible paths to take through a %dx%d grid.\n", *paths, WIDTH, HEIGHT);
 	return 0;
