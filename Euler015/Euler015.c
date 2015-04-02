@@ -12,15 +12,18 @@
  *      
 */
 
+/* 4x4 = 70, 3x3 = 20, 2x2 = 6 */
+
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define HEIGHT 4
-#define WIDTH 4
+#define HEIGHT 20
+#define WIDTH 20
 
 struct Node {
+	int pathsFromHere;
 	int n;
 	struct Node *right;
 	struct Node *down;
@@ -29,21 +32,20 @@ struct Node {
 void Node_new(struct Node *newNode, int value)
 {
 	newNode->n = value;
+	newNode->pathsFromHere = 0;
 	newNode->right = NULL;
 	newNode->down = NULL;
 }
 
-void CountPathsR(struct Node *first, int *paths);
+int CountPaths(struct Node *start);
 
 int main()
 {
 	struct Node *arr[WIDTH * HEIGHT + 1];
-	int *pathSolutions = mallocWIDTH * HEIGHT + 1];	
 	int i;
 	for (i = 1; i <= WIDTH * HEIGHT; i++) {
 		arr[i] = malloc(sizeof(struct Node));
 		Node_new(arr[i], i);
-		pathSolutions[i] = 0;
 	}
 
 	for (i = 1; i <= WIDTH * HEIGHT; i++) {
@@ -54,23 +56,32 @@ int main()
 		if (i % WIDTH != 0)
 			arr[i]->right = arr[i + 1];
 	}
+	
+	for (i = WIDTH*HEIGHT; i > 0; i--) {
+		CountPaths(arr[i]);
+	}
 
-	int *paths = malloc(sizeof(int));
-	*paths = 1;
-	CountPathsR(arr[1], paths);
-	printf("There are %d possible paths to take through a %dx%d grid.\n", *paths, WIDTH, HEIGHT);
+	printf("There are %d possible paths to take through a %dx%d grid.\n", arr[1]->pathsFromHere + 1, WIDTH, HEIGHT);
 	return 0;
 
 }
 
-void CountPathsR(struct Node *first, int *paths)
+int CountPaths(struct Node *start)
 {
-	//printf("Working on node %d.\n", first->n);
-	if (first->right != NULL) {
-		CountPathsR(first->right, paths);
+	int paths = 1;
+	if (start->right != NULL) {
+		if (start->right->pathsFromHere != 0)
+			paths = paths + start->right->pathsFromHere;
+		else
+			paths = paths + CountPaths(start->right);
 	}
-	if (first->down != NULL) {
-		CountPathsR(first->down, paths);
+	
+	if (start->down != NULL) {
+		if (start->down->pathsFromHere != 0)
+			paths = paths + start->down->pathsFromHere;
+		else
+			paths = paths + CountPaths(start->down);
 	}
-	(*paths)++;
+	start->pathsFromHere = paths;
+	return paths;
 }
