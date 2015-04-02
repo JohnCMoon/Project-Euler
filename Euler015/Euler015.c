@@ -10,78 +10,37 @@
  *   
  *      How many such routes are there through a 20×20 grid?
  *      
-*/
+ */
 
-/* 4x4 = 70, 3x3 = 20, 2x2 = 6 */
+/* It's just Pascal's Triangle! Don't believe me? Draw out a 3x3 system and
+   list all the possible paths to the bottom right corner at each node. :) */
 
 #include <stdio.h>
-#include <math.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
-#define HEIGHT 20
-#define WIDTH 20
-
-struct Node {
-	int pathsFromHere;
-	int n;
-	struct Node *right;
-	struct Node *down;
-};
-
-void Node_new(struct Node *newNode, int value)
-{
-	newNode->n = value;
-	newNode->pathsFromHere = 0;
-	newNode->right = NULL;
-	newNode->down = NULL;
-}
-
-int CountPaths(struct Node *start);
 
 int main()
 {
-	struct Node *arr[WIDTH * HEIGHT + 1];
-	int i;
-	for (i = 1; i <= WIDTH * HEIGHT; i++) {
-		arr[i] = malloc(sizeof(struct Node));
-		Node_new(arr[i], i);
-	}
+	/* We need to find the middle entry of the 40th row of Pascal's Triangle.
+	   For this, we need to generate the triangle. Let's store it in a
+	   multidimensional array. */
 
-	for (i = 1; i <= WIDTH * HEIGHT; i++) {
-
-		if (i <= WIDTH * (HEIGHT - 1))
-			arr[i]->down = arr[i + WIDTH];
-
-		if (i % WIDTH != 0)
-			arr[i]->right = arr[i + 1];
+	unsigned long pascTri[41][41] = {{0}};
+	int i, j;
+	for (i = 0; i < 41; i++) {
+		for (j = 0; j < 41; j++)
+			pascTri[i][j] = 1;
 	}
 	
-	for (i = WIDTH*HEIGHT; i > 0; i--) {
-		CountPaths(arr[i]);
+	pascTri[0][0] = 0;
+
+	for (i = 2; i < 41; i++) {
+		for (j = 1; j < i; j++)
+			pascTri[i][j] = pascTri[i-1][j-1] + pascTri[i-1][j];
+	
 	}
 
-	printf("There are %d possible paths to take through a %dx%d grid.\n", arr[1]->pathsFromHere + 1, WIDTH, HEIGHT);
+	printf("The middle entry of the 40th row of Pascal's Triangle\n");
+	printf("and consequently the number of routes through a 20x20 grid is:\n");
+	printf("%lu\n", pascTri[40][20]);	
+
 	return 0;
-
-}
-
-int CountPaths(struct Node *start)
-{
-	int paths = 1;
-	if (start->right != NULL) {
-		if (start->right->pathsFromHere != 0)
-			paths = paths + start->right->pathsFromHere;
-		else
-			paths = paths + CountPaths(start->right);
-	}
-	
-	if (start->down != NULL) {
-		if (start->down->pathsFromHere != 0)
-			paths = paths + start->down->pathsFromHere;
-		else
-			paths = paths + CountPaths(start->down);
-	}
-	start->pathsFromHere = paths;
-	return paths;
 }
