@@ -70,7 +70,7 @@ echo -en "int main()\n{\n\n\treturn 0;\n}" >> $CFILE
 # Adding a simple Makefile. #
 MAKEFILE=$DIR/Makefile
 echo "program:" > $MAKEFILE
-echo -en "\tgcc -Wall Euler$ZPROBLEM.c -o Euler$ZPROBLEM.o -lm" >> $MAKEFILE
+echo -en "\tgcc -Wall -g Euler$ZPROBLEM.c -o Euler$ZPROBLEM.o -lm" >> $MAKEFILE
 
 # Opening vim to the new C file for editing! #
 cd $DIR
