@@ -11,11 +11,12 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
 #include <limits.h>
 
-int *iToArr(unsigned long long n);
+unsigned long *iToArr(unsigned long long n);
 
 int main()
 {
@@ -24,24 +25,24 @@ int main()
 	printf("ULLONG_MAX = %llu\n", ULLONG_MAX);
 	printf("n = %llu\n", n);
 	int *arr = iToArr(n);
-	printf("%d\n", *arr);
+	int i;
+	for (i = 0; i < 16; i++)
+		printf("%d\n", *(arr + i));
 	return 0;
 }
 
-int *iToArr(unsigned long long n)
+unsigned long *iToArr(unsigned long long n)
 {
-	int length = !n;
-	while (n) {
+	unsigned long long cp = n;
+	int length = !cp;
+	while (cp) {
 		length++;
-		n/=10;
+		cp/=10;
 	}
-	int *arr = malloc(sizeof(int) * length);
+	unsigned long *arr = malloc(sizeof(unsigned long) * length);
 	int i;
 	for (i = length - 1; i >= 0; i--) {
-		arr[i] = n % pow(10, length - i) - n % pow(10, length - i + 1);
-
-
-
-
-		
+		arr[i] = fmod(n, pow(10, length - i)) - fmod(n, pow(10, length - i + 1));
+	}
+	return arr;	
 }
