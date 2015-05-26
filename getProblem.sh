@@ -38,15 +38,16 @@ then
 	ZPROBLEM=$PROBLEM
 fi
 
+DIR=Euler$ZPROBLEM
+
 # Exits if there's already a solution directory. #
-if [ -d "Euler$ZPROBLEM" ]
+if [ -d "$DIR" ]
 then
-	echo "error: directory 'Euler$ZPROBLEM' exists. Will not write."
+	echo "error: directory '$DIR' exists. Will not write."
 	exit 1
 fi
 
-mkdir Euler$ZPROBLEM
-DIR=Euler$ZPROBLEM
+mkdir $DIR
 CFILE=$DIR/Euler$ZPROBLEM.c
 
 # Starting the comment in the C file. #
@@ -55,7 +56,7 @@ echo -en "/*\n\n" > $CFILE
 # Getting nice formatted output at the top of a C file. #
 lynx -dump https://projecteuler.net/problem=$PROBLEM | 
 tail -n +14 |
-head -n -13 >> $CFILE
+head -n -15 >> $CFILE
 
 # Adding spaces and closing the comment. #
 sed -i '1 ! s/^/ *   /' $CFILE
