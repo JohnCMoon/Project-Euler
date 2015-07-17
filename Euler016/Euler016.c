@@ -11,38 +11,54 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include <stdbool.h>
-#include <limits.h>
 
-unsigned long *iToArr(unsigned long long n);
+void flatten(int *arr, int size);
 
 int main()
 {
-	unsigned long long n = pow(2, 50);
-	/* n * 20 = 2^1000 but it's too big to hold. */
-	printf("ULLONG_MAX = %llu\n", ULLONG_MAX);
-	printf("n = %llu\n", n);
-	int *arr = iToArr(n);
-	int i;
-	for (i = 0; i < 16; i++)
-		printf("%d\n", *(arr + i));
+	int arr[500] = { 0 }; // Just some huge array to hold 2^1000
+
+	arr[0] = 2;
+	int i, j;
+	
+	/* 1000 times, multiply every number in the array by two */	
+	for (i = 1; i < 1000; i++) { 
+		for (j = 0; j < 500; j++) {
+			arr[j] = arr[j] * 2;
+		}
+		flatten(&arr[0], 500); // Flatten the array after every cycle
+	}	
+
+	/* Add up the digits in the array to get your answer */
+	int sum = 0;
+	for (i = 0; i < 500; i++) {
+		sum = sum + arr[i];
+	}
+
+	printf("The sum of the digits of 2^1000 is %d\n", sum);
+
 	return 0;
 }
 
-unsigned long *iToArr(unsigned long long n)
+/* If any element of an int array is > 9, increments next element
+   and flattens current element. E.g. {2, 12} = {3, 2} */
+void flatten(int *arr, int size)
 {
-	unsigned long long cp = n;
-	int length = !cp;
-	while (cp) {
-		length++;
-		cp/=10;
-	}
-	unsigned long *arr = malloc(sizeof(unsigned long) * length);
 	int i;
-	for (i = length - 1; i >= 0; i--) {
-		arr[i] = fmod(n, pow(10, length - i)) - fmod(n, pow(10, length - i + 1));
+	for (i = 0; i < size; i++) {
+		if (arr[i] > 9) {
+			arr[i + 1]++;
+			arr[i] = arr[i] % 10;
+		}
 	}
-	return arr;	
+
+	bool isFlat = true;
+	for (i = 0; i < size; i++) {
+		if (arr[i] > 9)
+			isFlat = false; 
+	}
+
+	if (!isFlat)
+		flatten(arr, size);
 }
