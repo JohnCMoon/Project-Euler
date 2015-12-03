@@ -34,15 +34,24 @@
  *      04 62 98 27 23 09 70 98 73 93 38 53 60 04 23
  *   
  *      NOTE: As there are only 16384 routes, it is possible to solve this
- *      problem by trying every route. However, [9]Problem 67, is the same
+ *      problem by trying every route. However, Problem 67, is the same
  *      challenge with a triangle containing one-hundred rows; it cannot be
- *      solved by brute force, and requires a clever method! ;o)
+ *      solved by brute force, and requires a clever method! ;)
  *
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <stdbool.h>
+
+typedef struct Node {
+	int sum;
+	struct Node *next;
+} Node;
+
+void sumPath(int *arr, int x, int y, int sum, Node *head);
+void addToList(int sum, Node *traverse);
 
 int main()
 {
@@ -63,5 +72,51 @@ int main()
 	{63, 66, 4,  68, 89, 53, 67, 30, 73, 16, 69, 87, 40, 31},
 	{4,  62, 98, 27, 23, 9,  70, 98, 73, 93, 38, 53, 60, 4,  23}};
 	
+	int *p = arr;
+
+	Node *head = malloc(sizeof(Node));
+	head->sum = 0;
+	head->next = NULL;
+	int sum = 0;
+	sumPath(p, 0, 0, sum, head);
+	
+	int largest = 0;
+	Node *traverse = head;
+	while (traverse->next != NULL) {
+		if (traverse->sum > largest)
+			largest = traverse->sum;
+		Node *del = traverse;
+		traverse = traverse->next;
+		free(del);
+	}
+
 	return 0;
+}
+
+void sumPath(int *arr, int x, int y, int sum, Node *head)
+{
+	sum = sum + arr[x][y];
+	if (y == 14) {
+		addToList(sum, head);
+		return;
+	}
+
+	if (x > 0)
+		sumPath(arr, x - 1, y + 1, head);
+	
+	sumPath(arr, x, y + 1, head);
+
+	if (x <= y)
+		sumPath(arr, x + 1, y + 1, head);
+	
+	return;
+}
+
+void addToList(int sum, Node *traverse) {
+	while (traverse->next != NULL)
+		traverse = traverse->next;
+	Node *new = malloc(sizeof(Node));
+	new->sum = sum;
+	new->next = NULL;
+	traverse->next = new;
 }
